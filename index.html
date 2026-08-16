@@ -140,12 +140,6 @@
       gap: 0.5rem;
     }
 
-    .form-row-3 {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 0.5rem;
-    }
-
     .form-group {
       margin-bottom: 0.75rem;
     }
@@ -158,7 +152,7 @@
       color: var(--text-muted);
     }
 
-    .form-group input, .form-group select {
+    .form-group input, .form-group select, .form-group textarea {
       width: 100%;
       padding: 0.4rem 0.5rem;
       border: 1px solid var(--border-color);
@@ -167,7 +161,13 @@
       background-color: #fff;
     }
 
-    .form-group input:focus, .form-group select:focus {
+    .form-group textarea {
+      resize: vertical;
+      min-height: 54px;
+      font-family: monospace;
+    }
+
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
       outline: 2px solid var(--primary);
       border-color: transparent;
     }
@@ -342,6 +342,7 @@
       border-radius: 12px;
       box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
       width: 100%;
+      overflow-x: auto;
     }
 
     table {
@@ -504,12 +505,12 @@
             </select>
           </div>
 
-          <div class="form-row vanguard-ceiling-field hidden">
-            <div class="form-group">
+          <div class="form-row vanguard-row-field hidden">
+            <div class="form-group vanguard-ceiling-field">
               <label for="vanguardCeiling">Ceiling (% Max Up)</label>
               <input type="number" id="vanguardCeiling" step="0.1" value="5.0">
             </div>
-            <div class="form-group vanguard-floor-field hidden">
+            <div class="form-group vanguard-floor-field">
               <label for="vanguardFloor">Floor (% Max Cut)</label>
               <input type="number" id="vanguardFloor" step="0.1" value="2.5">
             </div>
@@ -675,137 +676,43 @@
           </div>
         </div>
 
-        <!-- Sequence-of-Returns Shock Test Inputs -->
+        <!-- Real Historical Sequence of Returns Stress Test -->
         <div class="account-card shock-card">
-          <h3>Deterministic Stress Test</h3>
+          <h3>Sequence of Returns Stress Test</h3>
           <div class="checkbox-group" style="margin-bottom: 0.75rem;">
             <input type="checkbox" id="enableShock">
-            <label for="enableShock" style="font-weight: 600; color: var(--danger-text);">Enable Static Crash Test</label>
+            <label for="enableShock" style="font-weight: 600; color: var(--danger-text);">Enable Historical Sequence Stress Test</label>
           </div>
 
           <div class="form-group shock-mode-group hidden">
-            <label for="shockMode">Stress Test Pattern</label>
-            <select id="shockMode">
-              <option value="realistic_cycle">Multi-Tier Historical Cycle (10% / 20% / 30%)</option>
-              <option value="custom_crash">Custom Single / Recurring Crash</option>
+            <label for="sequencePreset">Historical Market Sequence Preset</label>
+            <select id="sequencePreset">
+              <option value="sp500_30yr" selected>30-Year S&P 500 (1996–2025: CAGR 10.36%)</option>
+              <option value="sp500_20yr">20-Year S&P 500 (2006–2025: CAGR 11.01%)</option>
+              <option value="sp500_26yr">26-Year 21st Century S&P 500 (2000–2025: CAGR 8.08%)</option>
+              <option value="custom">Custom Annual Return Sequence</option>
             </select>
           </div>
 
-          <!-- Realistic Historical Cycle Fields -->
           <div class="realistic-shock-fields hidden">
-            <button type="button" class="btn-reset-shock" id="reset10YrCagrBtn">⚡ Calibrate to ~10% 20-Year Average</button>
+            <button type="button" class="btn-reset-shock" id="reset10YrCagrBtn">⚡ Load 30-Year Historical Sequence (1996–2025)</button>
             <div class="form-row">
               <div class="form-group">
-                <label for="cycleStartYear">Cycle Start Year</label>
-                <input type="number" id="cycleStartYear" value="2026">
-              </div>
-              <div class="form-group"></div>
-            </div>
-
-            <!-- Correction Inputs -->
-            <div class="form-row">
-              <div class="form-group">
-                <label for="correctionDrop">Correction Drop (%)</label>
-                <input type="number" id="correctionDrop" value="10">
+                <label for="seqStartYear">Sequence Start Year</label>
+                <input type="number" id="seqStartYear" value="2061">
               </div>
               <div class="form-group">
-                <label for="correctionInterval">Every (Years)</label>
-                <input type="number" id="correctionInterval" value="3">
-              </div>
-            </div>
-            <div class="form-row-3">
-              <div class="form-group">
-                <label for="corrRebound1Yr">1-Yr Reb (%)</label>
-                <input type="number" id="corrRebound1Yr" value="15">
-              </div>
-              <div class="form-group">
-                <label for="corrRebound3Yr">3-Yr Reb (%)</label>
-                <input type="number" id="corrRebound3Yr" value="42">
-              </div>
-              <div class="form-group">
-                <label for="corrRebound5Yr">5-Yr Reb (%)</label>
-                <input type="number" id="corrRebound5Yr" value="72">
+                <label for="afterSeqMode">After Sequence Ends</label>
+                <select id="afterSeqMode">
+                  <option value="repeat">Loop / Repeat Sequence</option>
+                  <option value="baseline">Return to Baseline Return Rates</option>
+                </select>
               </div>
             </div>
 
-            <!-- Bear Market Inputs -->
-            <div class="form-row" style="margin-top: 0.5rem;">
-              <div class="form-group">
-                <label for="bearDrop">Bear Market Drop (%)</label>
-                <input type="number" id="bearDrop" value="20">
-              </div>
-              <div class="form-group">
-                <label for="bearInterval">Every (Years)</label>
-                <input type="number" id="bearInterval" value="6">
-              </div>
-            </div>
-            <div class="form-row-3">
-              <div class="form-group">
-                <label for="bearRebound1Yr">1-Yr Reb (%)</label>
-                <input type="number" id="bearRebound1Yr" value="17">
-              </div>
-              <div class="form-group">
-                <label for="bearRebound3Yr">3-Yr Reb (%)</label>
-                <input type="number" id="bearRebound3Yr" value="45">
-              </div>
-              <div class="form-group">
-                <label for="bearRebound5Yr">5-Yr Reb (%)</label>
-                <input type="number" id="bearRebound5Yr" value="74">
-              </div>
-            </div>
-
-            <!-- Severe Crash Inputs -->
-            <div class="form-row" style="margin-top: 0.5rem;">
-              <div class="form-group">
-                <label for="crashDrop">Severe Crash Drop (%)</label>
-                <input type="number" id="crashDrop" value="30">
-              </div>
-              <div class="form-group">
-                <label for="crashInterval">Every (Years)</label>
-                <input type="number" id="crashInterval" value="12">
-              </div>
-            </div>
-            <div class="form-row-3">
-              <div class="form-group">
-                <label for="crashRebound1Yr">1-Yr Reb (%)</label>
-                <input type="number" id="crashRebound1Yr" value="21">
-              </div>
-              <div class="form-group">
-                <label for="crashRebound3Yr">3-Yr Reb (%)</label>
-                <input type="number" id="crashRebound3Yr" value="48">
-              </div>
-              <div class="form-group">
-                <label for="crashRebound5Yr">5-Yr Reb (%)</label>
-                <input type="number" id="crashRebound5Yr" value="88">
-              </div>
-            </div>
-          </div>
-
-          <!-- Custom Crash Fields -->
-          <div class="custom-shock-fields hidden">
-            <div class="form-row">
-              <div class="form-group">
-                <label for="shockYear">First Shock Year</label>
-                <input type="number" id="shockYear" value="2061">
-              </div>
-              <div class="form-group">
-                <label for="shockDrop">Market Drop (%)</label>
-                <input type="number" id="shockDrop" step="1" value="25">
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label for="shockDuration">Duration (Years)</label>
-                <input type="number" id="shockDuration" value="1" min="1" max="5">
-              </div>
-              <div class="form-group">
-                <label for="shockInterval">Repeat Every (Years)</label>
-                <input type="number" id="shockInterval" value="7" min="0" placeholder="0 = One time">
-              </div>
-            </div>
             <div class="form-group">
-              <label for="customReboundRate">1-Yr Rebound (%)</label>
-              <input type="number" id="customReboundRate" value="18">
+              <label for="sequenceReturnsInput">Annual Market Returns Sequence (%) [Comma-Separated]</label>
+              <textarea id="sequenceReturnsInput" rows="3">23.0, 33.4, 28.6, 21.0, -9.1, -11.9, -22.1, 28.7, 10.9, 4.9, 15.8, 5.5, -37.0, 26.5, 15.1, 2.1, 16.0, 32.4, 13.7, 1.4, 12.0, 21.8, -4.4, 31.5, 18.4, 28.7, -18.1, 26.3, 25.0, 17.9</textarea>
             </div>
           </div>
         </div>
@@ -930,16 +837,30 @@
     let incomeChartInstance = null;
     let projectionDataset = [];
 
+    // Real Historical Sequences (S&P 500 Total Annual Returns)
+    const SEQUENCE_PRESETS = {
+      sp500_30yr: "23.0, 33.4, 28.6, 21.0, -9.1, -11.9, -22.1, 28.7, 10.9, 4.9, 15.8, 5.5, -37.0, 26.5, 15.1, 2.1, 16.0, 32.4, 13.7, 1.4, 12.0, 21.8, -4.4, 31.5, 18.4, 28.7, -18.1, 26.3, 25.0, 17.9",
+      sp500_20yr: "15.8, 5.5, -37.0, 26.5, 15.1, 2.1, 16.0, 32.4, 13.7, 1.4, 12.0, 21.8, -4.4, 31.5, 18.4, 28.7, -18.1, 26.3, 25.0, 17.9",
+      sp500_26yr: "-9.1, -11.9, -22.1, 28.7, 10.9, 4.9, 15.8, 5.5, -37.0, 26.5, 15.1, 2.1, 16.0, 32.4, 13.7, 1.4, 12.0, 21.8, -4.4, 31.5, 18.4, 28.7, -18.1, 26.3, 25.0, 17.9"
+    };
+
     form.addEventListener('submit', function(e) {
       e.preventDefault();
     });
 
-    // Safe number parser that preserves explicit '0' entries without resorting to fallback defaults
     function parseNum(id, defaultVal, isFloat = false) {
       const el = document.getElementById(id);
       if (!el) return defaultVal;
       const val = isFloat ? parseFloat(el.value) : parseInt(el.value, 10);
       return isNaN(val) ? defaultVal : val;
+    }
+
+    function parseSequenceArray() {
+      const el = document.getElementById('sequenceReturnsInput');
+      if (!el || !el.value) return [];
+      return el.value.split(',')
+                      .map(s => parseFloat(s.trim()))
+                      .filter(n => !isNaN(n));
     }
 
     function randomNormal(mean, stdDev) {
@@ -952,7 +873,6 @@
 
     // Official CRA RRIF Minimum Factor Lookup Table mapped to start-of-year age
     function getRrifMinRate(age) {
-      if (age < 72) return 0;
       const startOfYearAge = age - 1;
       if (startOfYearAge < 71) {
         return 1 / Math.max(1, (90 - startOfYearAge));
@@ -967,15 +887,14 @@
       return rates[startOfYearAge] || 0.20;
     }
 
-    // Official Ontario Health Premium Calculation Tier Schedule
+    // Official Ontario Health Premium Calculation Tier Schedule (Statutory un-indexed rates)
     function calculateOntarioHealthPremium(income) {
       if (income <= 20000) return 0;
-      if (income <= 25000) return Math.min(300, 0.06 * (income - 20000));
-      if (income <= 36000) return Math.min(450, 300 + 0.06 * (income - 25000));
-      if (income <= 48000) return Math.min(600, 450 + 0.06 * (income - 36000));
-      if (income <= 72000) return Math.min(750, 600 + 0.25 * (income - 48000));
-      if (income <= 200000) return Math.min(900, 750 + 0.25 * (income - 72000));
-      return 900;
+      if (income <= 36000) return Math.min(300, 0.06 * (income - 20000));
+      if (income <= 48000) return Math.min(450, 300 + 0.06 * (income - 36000));
+      if (income <= 72000) return Math.min(600, 450 + 0.25 * (income - 48000));
+      if (income <= 200000) return Math.min(750, 600 + 0.25 * (income - 72000));
+      return Math.min(900, 750 + 0.25 * (income - 200000));
     }
 
     function updateStrategyUI() {
@@ -983,8 +902,9 @@
       const alloc = document.getElementById('autoWithdrawAllocation').value;
 
       const autoFields = document.querySelectorAll('.auto-strat-field');
-      const ceilingFields = document.querySelectorAll('.vanguard-ceiling-field');
-      const floorFields = document.querySelectorAll('.vanguard-floor-field');
+      const rowField = document.querySelector('.vanguard-row-field');
+      const ceilingField = document.querySelector('.vanguard-ceiling-field');
+      const floorField = document.querySelector('.vanguard-floor-field');
       const bufferFields = document.querySelectorAll('.buffer-field');
       const manualFields = document.querySelectorAll('.manual-withdraw-field');
       const allocField = document.querySelector('.auto-strat-alloc-field');
@@ -992,8 +912,7 @@
 
       if (type === 'manual') {
         autoFields.forEach(el => el.classList.add('hidden'));
-        ceilingFields.forEach(el => el.classList.add('hidden'));
-        floorFields.forEach(el => el.classList.add('hidden'));
+        rowField.classList.add('hidden');
         bufferFields.forEach(el => el.classList.add('hidden'));
         allocField.classList.add('hidden');
         singleAccField.classList.add('hidden');
@@ -1004,16 +923,17 @@
         manualFields.forEach(el => el.classList.add('hidden'));
 
         if (type === 'vanguard_dynamic') {
-          ceilingFields.forEach(el => el.classList.remove('hidden'));
-          floorFields.forEach(el => el.classList.remove('hidden'));
+          rowField.classList.remove('hidden');
+          ceilingField.classList.remove('hidden');
+          floorField.classList.remove('hidden');
           bufferFields.forEach(el => el.classList.add('hidden'));
         } else if (type === 'vanguard_buffer') {
-          ceilingFields.forEach(el => el.classList.remove('hidden'));
-          floorFields.forEach(el => el.classList.add('hidden'));
+          rowField.classList.remove('hidden');
+          ceilingField.classList.remove('hidden');
+          floorField.classList.add('hidden');
           bufferFields.forEach(el => el.classList.remove('hidden'));
         } else {
-          ceilingFields.forEach(el => el.classList.add('hidden'));
-          floorFields.forEach(el => el.classList.add('hidden'));
+          rowField.classList.add('hidden');
           bufferFields.forEach(el => el.classList.add('hidden'));
         }
 
@@ -1024,7 +944,6 @@
         }
       }
 
-      // Update Spouse RRIF Age UI
       const useSpouseRrif = document.getElementById('useSpouseRrif').checked;
       const spouseField = document.querySelector('.spouse-rrif-field');
       if (useSpouseRrif) {
@@ -1034,29 +953,20 @@
       }
 
       const enableShock = document.getElementById('enableShock').checked;
-      const shockMode = document.getElementById('shockMode').value;
       const shockModeGroup = document.querySelector('.shock-mode-group');
       const realisticShockFields = document.querySelector('.realistic-shock-fields');
-      const customShockFields = document.querySelector('.custom-shock-fields');
 
       if (!enableShock) {
         shockModeGroup.classList.add('hidden');
         realisticShockFields.classList.add('hidden');
-        customShockFields.classList.add('hidden');
       } else {
         shockModeGroup.classList.remove('hidden');
-        if (shockMode === 'realistic_cycle') {
-          realisticShockFields.classList.remove('hidden');
-          customShockFields.classList.add('hidden');
-        } else {
-          realisticShockFields.classList.add('hidden');
-          customShockFields.classList.remove('hidden');
-        }
+        realisticShockFields.classList.remove('hidden');
       }
     }
 
     function saveInputs() {
-      const inputs = form.querySelectorAll('input, select');
+      const inputs = form.querySelectorAll('input, select, textarea');
       const data = {};
       inputs.forEach(input => {
         if (input.type === 'checkbox') {
@@ -1089,25 +999,25 @@
       }
     }
 
-    // Combined Ontario & Federal Tax Calculation with Non-Refundable Credits (Age Amount & Pension Income Credit)
+    // Combined Ontario & Federal Tax Calculation with Non-Refundable Credits (Accurate 2024 Baseline)
     function calculateOntarioTax(taxableNetIncome, inflationFactor, currentAge = 30, rrspWithdrawal = 0) {
       if (taxableNetIncome <= 0) return 0;
 
-      const fedBPA = 16452 * inflationFactor;
+      const fedBPA = 15705 * inflationFactor;
       const fedBrackets = [
-        { limit: 58523 * inflationFactor, rate: 0.14 },
-        { limit: 117045 * inflationFactor, rate: 0.205 },
-        { limit: 181440 * inflationFactor, rate: 0.26 },
-        { limit: 258482 * inflationFactor, rate: 0.29 },
+        { limit: 55867 * inflationFactor, rate: 0.15 },
+        { limit: 111733 * inflationFactor, rate: 0.205 },
+        { limit: 173205 * inflationFactor, rate: 0.26 },
+        { limit: 246752 * inflationFactor, rate: 0.29 },
         { limit: Infinity, rate: 0.33 }
       ];
 
-      const onBPA = 12989 * inflationFactor;
+      const onBPA = 12399 * inflationFactor;
       const onBrackets = [
-        { limit: 53891 * inflationFactor, rate: 0.0505 },
-        { limit: 107785 * inflationFactor, rate: 0.0915 },
-        { limit: 150000 * inflationFactor, rate: 0.1116 },
-        { limit: 220000 * inflationFactor, rate: 0.1216 },
+        { limit: 51446 * inflationFactor, rate: 0.0505 },
+        { limit: 102894 * inflationFactor, rate: 0.0915 },
+        { limit: 150000, rate: 0.1116 }, // Statutorily fixed, not indexed
+        { limit: 220000, rate: 0.1216 }, // Statutorily fixed, not indexed
         { limit: Infinity, rate: 0.1316 }
       ];
 
@@ -1123,17 +1033,16 @@
       }
 
       // Non-refundable Federal Credits
-      let fedCredits = fedBPA * 0.14;
+      let fedCredits = fedBPA * 0.15;
       if (currentAge >= 65) {
-        // Federal Pension Income Amount (14% on up to $2,000 eligible RRIF draw)
-        const fedPensionEligible = Math.min(2000 * inflationFactor, rrspWithdrawal);
-        fedCredits += fedPensionEligible * 0.14;
+        // Federal Pension Income Amount cap is $2,000 nominal
+        const fedPensionEligible = Math.min(2000, rrspWithdrawal);
+        fedCredits += fedPensionEligible * 0.15;
 
-        // Federal Age Amount ($8,790 max, clawed back at 15% above $45,522)
         const fedAgeMax = 8790 * inflationFactor;
         const fedAgeThreshold = 45522 * inflationFactor;
         const fedAgeAmt = Math.max(0, fedAgeMax - 0.15 * Math.max(0, taxableNetIncome - fedAgeThreshold));
-        fedCredits += fedAgeAmt * 0.14;
+        fedCredits += fedAgeAmt * 0.15;
       }
       const fedTax = Math.max(0, fedTaxGross - fedCredits);
 
@@ -1151,21 +1060,20 @@
       // Non-refundable Ontario Credits
       let onCredits = onBPA * 0.0505;
       if (currentAge >= 65) {
-        // Ontario Pension Income Amount (5.05% on up to $1,527 eligible RRIF draw)
-        const onPensionEligible = Math.min(1527 * inflationFactor, rrspWithdrawal);
+        // Ontario Pension Income Amount cap is $1,691 nominal
+        const onPensionEligible = Math.min(1691, rrspWithdrawal);
         onCredits += onPensionEligible * 0.0505;
 
-        // Ontario Age Amount ($5,640 max, clawed back at 15% above $42,201)
-        const onAgeMax = 5640 * inflationFactor;
-        const onAgeThreshold = 42201 * inflationFactor;
+        const onAgeMax = 5744 * inflationFactor;
+        const onAgeThreshold = 43127 * inflationFactor;
         const onAgeAmt = Math.max(0, onAgeMax - 0.15 * Math.max(0, taxableNetIncome - onAgeThreshold));
         onCredits += onAgeAmt * 0.0505;
       }
       let onTax = Math.max(0, onTaxGross - onCredits);
 
       // Ontario Surtax
-      const t1 = 5818 * inflationFactor;
-      const t2 = 7449 * inflationFactor;
+      const t1 = 5315 * inflationFactor;
+      const t2 = 6802 * inflationFactor;
       let surtax = 0;
       if (onTax > t1) surtax += (onTax - t1) * 0.20;
       if (onTax > t2) surtax += (onTax - t2) * 0.36;
@@ -1177,8 +1085,9 @@
       return fedTax + onTax + healthPremium;
     }
 
+    // Consolidated settings fetcher outside of MC loop to prevent massive DOM thrashing
     function getSimConfig() {
-      return {
+      const cfg = {
         startYear: parseNum('startYear', 2026),
         startAge: parseNum('startAge', 30),
         inflationRate: parseNum('inflationRate', 2.0, true) / 100,
@@ -1195,50 +1104,25 @@
         spouseStartAge: parseNum('spouseStartAge', 27),
 
         enableShock: document.getElementById('enableShock').checked,
-        shockMode: document.getElementById('shockMode').value,
-        cycleStartYear: parseNum('cycleStartYear', 2026),
-        
-        correctionDrop: parseNum('correctionDrop', 10.0, true) / 100,
-        correctionInterval: parseNum('correctionInterval', 3),
-        corrRebound1Yr: parseNum('corrRebound1Yr', 15.0, true) / 100,
-        corrRebound3Yr: parseNum('corrRebound3Yr', 42.0, true) / 100,
-        corrRebound5Yr: parseNum('corrRebound5Yr', 72.0, true) / 100,
+        seqStartYear: parseNum('seqStartYear', 2061),
+        afterSeqMode: document.getElementById('afterSeqMode').value,
+        seqReturns: parseSequenceArray(),
 
-        bearDrop: parseNum('bearDrop', 20.0, true) / 100,
-        bearInterval: parseNum('bearInterval', 6),
-        bearRebound1Yr: parseNum('bearRebound1Yr', 17.0, true) / 100,
-        bearRebound3Yr: parseNum('bearRebound3Yr', 45.0, true) / 100,
-        bearRebound5Yr: parseNum('bearRebound5Yr', 74.0, true) / 100,
-
-        crashDrop: parseNum('crashDrop', 30.0, true) / 100,
-        crashInterval: parseNum('crashInterval', 12),
-        crashRebound1Yr: parseNum('crashRebound1Yr', 21.0, true) / 100,
-        crashRebound3Yr: parseNum('crashRebound3Yr', 48.0, true) / 100,
-        crashRebound5Yr: parseNum('crashRebound5Yr', 88.0, true) / 100,
-
-        shockYear: parseNum('shockYear', 2061),
-        customShockDrop: parseNum('shockDrop', 25.0, true) / 100,
-        shockDuration: parseNum('shockDuration', 1),
-        shockInterval: parseNum('shockInterval', 0),
-        customReboundRate: parseNum('customReboundRate', 18.0, true) / 100,
-        
         cppAmount: parseNum('cppAmount', 0.0, true),
         cppStartYear: parseNum('cppStartYear', 9999),
         oasAmount: parseNum('oasAmount', 0.0, true),
         oasStartYear: parseNum('oasStartYear', 9999),
         
         mcVolatility: parseNum('mcVolatility', 12.0, true) / 100,
-        mcTrials: parseNum('mcTrials', 500)
+        mcTrials: parseNum('mcTrials', 500),
+        
+        taxableACB: parseNum('taxableCostBasis', 0, true)
       };
-    }
 
-    function runTrial(isMonteCarlo = false, simConfig = null) {
-      const cfg = simConfig || getSimConfig();
       const keys = ['taxable', 'tfsa', 'rrsp'];
-      
-      const accs = {};
+      cfg.accs = {};
       keys.forEach(k => {
-        accs[k] = {
+        cfg.accs[k] = {
           balance: parseNum(`${k}Start`, 0, true),
           rate: parseNum(`${k}Return`, 0, true) / 100,
           contrib: parseNum(`${k}Contrib`, 0, true),
@@ -1248,104 +1132,52 @@
         };
       });
 
-      let taxableACB = parseNum('taxableCostBasis', 0, true);
+      return cfg;
+    }
+
+    function runTrial(isMonteCarlo = false, simConfig = null) {
+      const cfg = simConfig || getSimConfig();
+      const keys = ['taxable', 'tfsa', 'rrsp'];
+      
+      const accs = {
+        taxable: { ...cfg.accs.taxable },
+        tfsa: { ...cfg.accs.tfsa },
+        rrsp: { ...cfg.accs.rrsp }
+      };
+
+      let taxableACB = cfg.taxableACB;
       let currentAge = cfg.startAge;
       let currentYear = cfg.startYear;
       let inflationFactor = 1.0;
 
       let lastPortfolioTargetNominal = 0;
       let cashBufferRemaining = cfg.cashBufferMaxYears;
-      let recoveryTracker = { severity: null, yearPost: 0 };
 
       const trialDataset = [];
       let isDepleted = false;
 
-      // Trajectory annual CAGRs with safe math guards
-      const corrAnnY2Y3 = Math.sqrt(Math.max(0.0001, (1 + cfg.corrRebound3Yr) / (1 + cfg.corrRebound1Yr))) - 1;
-      const corrAnnY4Y5 = Math.sqrt(Math.max(0.0001, (1 + cfg.corrRebound5Yr) / (1 + cfg.corrRebound3Yr))) - 1;
-
-      const bearAnnY2Y3 = Math.sqrt(Math.max(0.0001, (1 + cfg.bearRebound3Yr) / (1 + cfg.bearRebound1Yr))) - 1;
-      const bearAnnY4Y5 = Math.sqrt(Math.max(0.0001, (1 + cfg.bearRebound5Yr) / (1 + cfg.bearRebound3Yr))) - 1;
-
-      const crashAnnY2Y3 = Math.sqrt(Math.max(0.0001, (1 + cfg.crashRebound3Yr) / (1 + cfg.crashRebound1Yr))) - 1;
-      const crashAnnY4Y5 = Math.sqrt(Math.max(0.0001, (1 + cfg.crashRebound5Yr) / (1 + cfg.crashRebound3Yr))) - 1;
-
       while (currentAge <= 100) {
-        let isShockActive = false;
-        let activeDropPct = 0;
+        let isSeqActive = false;
+        let activeSeqReturn = 0;
+        let cashBufferDraw = 0; // Income simulated from a secondary external cash account to prevent starvation
 
-        if (!isMonteCarlo && cfg.enableShock) {
-          if (cfg.shockMode === 'realistic_cycle') {
-            if (currentYear >= cfg.cycleStartYear) {
-              const elapsed = currentYear - cfg.cycleStartYear;
-              if (elapsed > 0) {
-                if (cfg.crashInterval > 0 && elapsed % cfg.crashInterval === 0) {
-                  isShockActive = true;
-                  activeDropPct = cfg.crashDrop;
-                  recoveryTracker = { severity: 'crash', yearPost: 0 };
-                } else if (cfg.bearInterval > 0 && elapsed % cfg.bearInterval === 0 && recoveryTracker.severity !== 'crash') {
-                  isShockActive = true;
-                  activeDropPct = cfg.bearDrop;
-                  recoveryTracker = { severity: 'bear', yearPost: 0 };
-                } else if (cfg.correctionInterval > 0 && elapsed % cfg.correctionInterval === 0 && !recoveryTracker.severity) {
-                  isShockActive = true;
-                  activeDropPct = cfg.correctionDrop;
-                  recoveryTracker = { severity: 'correction', yearPost: 0 };
-                }
+        if (!isMonteCarlo && cfg.enableShock && cfg.seqReturns.length > 0) {
+          if (currentYear >= cfg.seqStartYear) {
+            const seqIndex = currentYear - cfg.seqStartYear;
+            if (seqIndex < cfg.seqReturns.length) {
+              isSeqActive = true;
+              activeSeqReturn = cfg.seqReturns[seqIndex] / 100;
+            } else {
+              if (cfg.afterSeqMode === 'repeat') {
+                isSeqActive = true;
+                activeSeqReturn = cfg.seqReturns[seqIndex % cfg.seqReturns.length] / 100;
               }
             }
-          } else {
-            if (currentYear >= cfg.shockYear) {
-              if (cfg.shockInterval > 0) {
-                const cycleOffset = (currentYear - cfg.shockYear) % cfg.shockInterval;
-                isShockActive = cycleOffset < cfg.shockDuration;
-              } else {
-                isShockActive = currentYear < cfg.shockYear + cfg.shockDuration;
-              }
-              if (isShockActive) {
-                activeDropPct = cfg.customShockDrop;
-                recoveryTracker = { severity: 'custom', yearPost: 0 };
-              }
-            }
-          }
-        }
-
-        let isRecoveryYear = false;
-        let activeReboundRate = 0;
-
-        if (!isMonteCarlo && !isShockActive && recoveryTracker.severity) {
-          recoveryTracker.yearPost++;
-          const y = recoveryTracker.yearPost;
-          const sev = recoveryTracker.severity;
-
-          if (y <= 5) {
-            isRecoveryYear = true;
-            if (sev === 'correction') {
-              if (y === 1) activeReboundRate = cfg.corrRebound1Yr;
-              else if (y <= 3) activeReboundRate = corrAnnY2Y3;
-              else activeReboundRate = corrAnnY4Y5;
-            } else if (sev === 'bear') {
-              if (y === 1) activeReboundRate = cfg.bearRebound1Yr;
-              else if (y <= 3) activeReboundRate = bearAnnY2Y3;
-              else activeReboundRate = bearAnnY4Y5;
-            } else if (sev === 'crash') {
-              if (y === 1) activeReboundRate = cfg.crashRebound1Yr;
-              else if (y <= 3) activeReboundRate = crashAnnY2Y3;
-              else activeReboundRate = crashAnnY4Y5;
-            } else if (sev === 'custom') {
-              if (y === 1) activeReboundRate = cfg.customReboundRate;
-              else isRecoveryYear = false;
-            }
-          }
-
-          if (y >= 5 || !isRecoveryYear) {
-            recoveryTracker = { severity: null, yearPost: 0 };
           }
         }
 
         const mcMarketShock = isMonteCarlo ? randomNormal(0, cfg.mcVolatility) : 0;
 
-        // Start-of-Year RRIF balance for CRA RRIF Minimum calculation
         const startRrifBalance = accs.rrsp.balance;
         let totalStartBal = keys.reduce((sum, k) => sum + accs[k].balance, 0);
 
@@ -1353,63 +1185,52 @@
         if (totalStartBal > 0) {
           keys.forEach(k => {
             const acc = accs[k];
-            let rate = acc.rate + mcMarketShock;
-            if (!isMonteCarlo && isShockActive) rate = -activeDropPct;
-            else if (!isMonteCarlo && isRecoveryYear) rate = activeReboundRate;
+            let rate = isMonteCarlo ? (acc.rate + mcMarketShock) : (isSeqActive ? activeSeqReturn : acc.rate);
             weightedReturn += (acc.balance / totalStartBal) * rate;
           });
         } else {
-          weightedReturn = isMonteCarlo ? mcMarketShock : (isShockActive ? -activeDropPct : 0);
+          weightedReturn = isMonteCarlo ? mcMarketShock : (isSeqActive ? activeSeqReturn : 0);
         }
 
         const isDownYear = weightedReturn < 0;
 
         const curContrib = {};
-        const curWithdraw = {};
-
         keys.forEach(k => {
           const acc = accs[k];
           let c = (currentYear <= acc.contribEnd) ? acc.contrib : 0;
+          // Enforce CRA Age 71 RRSP contribution limit
+          if (k === 'rrsp' && currentAge > 71) c = 0;
           c *= inflationFactor;
           curContrib[k] = c;
         });
 
-        // Compute post-growth balance plus contributions BEFORE determining withdrawal allocation
+        // Compute available post-growth plus contribution balance
         let postGrowthPlusContrib = {};
         keys.forEach(k => {
-          let rate = accs[k].rate + mcMarketShock;
-          if (!isMonteCarlo && isShockActive) rate = -activeDropPct;
-          else if (!isMonteCarlo && isRecoveryYear) rate = activeReboundRate;
-          postGrowthPlusContrib[k] = (accs[k].balance * (1 + rate)) + curContrib[k];
+          let rate = isMonteCarlo ? (accs[k].rate + mcMarketShock) : (isSeqActive ? activeSeqReturn : accs[k].rate);
+          postGrowthPlusContrib[k] = Math.max(0, (accs[k].balance * (1 + rate)) + curContrib[k]);
         });
 
-        // Calculate CRA RRIF Mandatory Minimum Draw using either Owner's or Spouse's Age
         const spouseAge = cfg.spouseStartAge + (currentYear - cfg.startYear);
         const effectiveRrifAge = cfg.useSpouseRrif ? spouseAge : currentAge;
         const rrifMin = (currentAge >= 72) ? startRrifBalance * getRrifMinRate(effectiveRrifAge) : 0;
+
+        let targetWithdrawalPerAccount = { taxable: 0, tfsa: 0, rrsp: 0 };
 
         if (cfg.strategyType === 'manual') {
           keys.forEach(k => {
             const acc = accs[k];
             let w = (currentYear >= acc.withdrawalStart) ? acc.withdrawal : 0;
             w *= inflationFactor;
-            curWithdraw[k] = w;
+            targetWithdrawalPerAccount[k] = w;
           });
 
-          // Enforce CRA RRIF Minimum in Manual Mode at Age 72+
           if (currentAge >= 72 && postGrowthPlusContrib['rrsp'] > 0) {
-            if (curWithdraw['rrsp'] < rrifMin) {
-              curWithdraw['rrsp'] = Math.min(rrifMin, postGrowthPlusContrib['rrsp']);
+            if (targetWithdrawalPerAccount['rrsp'] < rrifMin) {
+              targetWithdrawalPerAccount['rrsp'] = Math.min(rrifMin, postGrowthPlusContrib['rrsp']);
             }
           }
-
-          // Cap manual withdrawals to available post-growth-plus-contrib funds
-          keys.forEach(k => {
-            curWithdraw[k] = Math.min(curWithdraw[k], postGrowthPlusContrib[k]);
-          });
         } else {
-          keys.forEach(k => curWithdraw[k] = 0);
-
           if (currentYear >= cfg.retireStartYear) {
             const portfolioStartBal = totalStartBal;
             let targetPortfolioWithdrawal = 0;
@@ -1417,13 +1238,18 @@
             if (cfg.strategyType === 'vanguard_buffer') {
               if (isDownYear) {
                 if (cashBufferRemaining > 0) {
+                  // Simulate deferring equities liquidation by drawing living expenses from an external cash buffer
                   targetPortfolioWithdrawal = 0;
                   cashBufferRemaining--;
                   if (lastPortfolioTargetNominal > 0) {
                     lastPortfolioTargetNominal *= (1 + cfg.inflationRate);
+                  } else {
+                    lastPortfolioTargetNominal = portfolioStartBal * cfg.initialSWR;
                   }
+                  cashBufferDraw = lastPortfolioTargetNominal;
                 } else {
-                  targetPortfolioWithdrawal = portfolioStartBal * cfg.initialSWR;
+                  // If the buffer runs out, fall back safely to the inflation-adjusted prior nominal value to avoid massive income drops
+                  targetPortfolioWithdrawal = lastPortfolioTargetNominal > 0 ? (lastPortfolioTargetNominal * (1 + cfg.inflationRate)) : (portfolioStartBal * cfg.initialSWR);
                   lastPortfolioTargetNominal = targetPortfolioWithdrawal;
                 }
               } else {
@@ -1458,19 +1284,17 @@
               lastPortfolioTargetNominal = targetPortfolioWithdrawal;
             }
 
-            // Satisfy mandatory RRIF minimum draw first
             let mandatoryRrifDraw = 0;
             if (currentAge >= 72 && postGrowthPlusContrib['rrsp'] > 0) {
               mandatoryRrifDraw = Math.min(rrifMin, postGrowthPlusContrib['rrsp']);
-              curWithdraw['rrsp'] = mandatoryRrifDraw;
+              targetWithdrawalPerAccount['rrsp'] = mandatoryRrifDraw;
             }
 
             let remainingToDraw = Math.max(0, targetPortfolioWithdrawal - mandatoryRrifDraw);
 
-            // Compute remaining available balances after mandatory RRIF draw
             let availBal = {};
             keys.forEach(k => {
-              availBal[k] = postGrowthPlusContrib[k] - curWithdraw[k];
+              availBal[k] = Math.max(0, postGrowthPlusContrib[k] - targetWithdrawalPerAccount[k]);
             });
             let totalAvail = keys.reduce((sum, k) => sum + availBal[k], 0);
 
@@ -1478,12 +1302,12 @@
               if (cfg.autoAlloc === 'pro_rata') {
                 const drawAmount = Math.min(remainingToDraw, totalAvail);
                 keys.forEach(k => {
-                  curWithdraw[k] += drawAmount * (availBal[k] / totalAvail);
+                  targetWithdrawalPerAccount[k] += drawAmount * (availBal[k] / totalAvail);
                 });
               } else if (cfg.autoAlloc === 'single_account') {
                 const sKey = cfg.singleAccKey;
                 if (availBal[sKey] > 0) {
-                  curWithdraw[sKey] += Math.min(remainingToDraw, availBal[sKey]);
+                  targetWithdrawalPerAccount[sKey] += Math.min(remainingToDraw, availBal[sKey]);
                 }
               } else {
                 let drawOrder = ['taxable', 'rrsp', 'tfsa'];
@@ -1493,7 +1317,7 @@
                 drawOrder.forEach(k => {
                   if (remainingToDraw > 0 && availBal[k] > 0) {
                     const draw = Math.min(remainingToDraw, availBal[k]);
-                    curWithdraw[k] += draw;
+                    targetWithdrawalPerAccount[k] += draw;
                     remainingToDraw -= draw;
                   }
                 });
@@ -1502,74 +1326,65 @@
           }
         }
 
+        // Strictly cap actual withdrawals at total available funds (Eliminates phantom withdrawals)
+        const actualWithdraw = {};
+        keys.forEach(k => {
+          actualWithdraw[k] = Math.min(targetWithdrawalPerAccount[k], postGrowthPlusContrib[k]);
+        });
+
         let curCpp = (currentYear >= cfg.cppStartYear) ? cfg.cppAmount : 0;
         let curOasBase = (currentYear >= cfg.oasStartYear) ? cfg.oasAmount : 0;
         curCpp *= inflationFactor;
         curOasBase *= inflationFactor;
 
-        // Apply automatic 10% OAS enhancement for age 75+
         let curOasGross = (currentAge >= 75) ? curOasBase * 1.10 : curOasBase;
-
         const sumContrib = keys.reduce((sum, k) => sum + curContrib[k], 0);
 
-        // Apply Market Growth to account balances
-        keys.forEach(k => {
-          const acc = accs[k];
-          let rate = acc.rate;
-          if (isMonteCarlo) {
-            rate = acc.rate + mcMarketShock;
-          } else {
-            if (isShockActive) rate = -activeDropPct;
-            else if (isRecoveryYear) rate = activeReboundRate;
-          }
-          acc.balance *= (1 + rate);
-        });
-
-        // Add contributions to taxable balance
-        accs.taxable.balance += curContrib.taxable;
-        taxableACB += curContrib.taxable;
-
-        // CRA Proportional ACB reduction and taxable capital gains calculation
+        // CRA Taxable Capital Gain Calculation & ACB Tracking
         let taxableCapGain = 0;
-        if (curWithdraw.taxable > 0 && accs.taxable.balance > 0) {
-          const actualW = Math.min(curWithdraw.taxable, accs.taxable.balance);
-          const acbReduction = taxableACB * (actualW / accs.taxable.balance);
-          const capGainRealized = Math.max(0, actualW - acbReduction);
-          taxableCapGain = 0.50 * capGainRealized;
-          
-          accs.taxable.balance -= actualW;
-          taxableACB = Math.max(0, taxableACB - acbReduction);
-        }
-        if (accs.taxable.balance < 0) accs.taxable.balance = 0;
+        if (actualWithdraw.taxable > 0 && postGrowthPlusContrib.taxable > 0) {
+          const balanceBeforeWithdraw = postGrowthPlusContrib.taxable;
+          const acbWithContrib = taxableACB + curContrib.taxable;
+          const acbReduction = acbWithContrib * (actualWithdraw.taxable / balanceBeforeWithdraw);
+          const capGainRealized = Math.max(0, actualWithdraw.taxable - acbReduction);
 
-        // Non-taxable account balance updates
-        ['tfsa', 'rrsp'].forEach(k => {
-          accs[k].balance += curContrib[k] - curWithdraw[k];
-          if (accs[k].balance < 0) accs[k].balance = 0;
+          // 2024 Canadian Inclusion Rate Rules: 50% under $250k, 66.67% over $250k
+          const capGainThreshold = 250000; // Flat nominal threshold, not indexed
+          if (capGainRealized <= capGainThreshold) {
+            taxableCapGain = 0.50 * capGainRealized;
+          } else {
+            taxableCapGain = (0.50 * capGainThreshold) + ((2/3) * (capGainRealized - capGainThreshold));
+          }
+
+          taxableACB = Math.max(0, acbWithContrib - acbReduction);
+        } else {
+          taxableACB += curContrib.taxable;
+        }
+
+        // Update ending account balances
+        keys.forEach(k => {
+          accs[k].balance = Math.max(0, postGrowthPlusContrib[k] - actualWithdraw[k]);
         });
 
-        // CRA Line 23400 Net World Income before OAS Recovery Tax Deduction
+        // CRA Line 23400 Net Income calculation
         const line23400NetIncome = Math.max(0, 
-          curWithdraw.rrsp + taxableCapGain + curCpp + curOasGross - curContrib.rrsp
+          actualWithdraw.rrsp + taxableCapGain + curCpp + curOasGross - curContrib.rrsp
         );
 
-        // OAS Recovery Tax Calculation (15% on income above $95,323 threshold)
-        const oasThreshold = 95323 * inflationFactor;
+        // OAS Recovery Tax (Clawback)
+        const oasThreshold = 90997 * inflationFactor; // 2024 Threshold
         let oasClawback = 0;
         if (curOasGross > 0 && line23400NetIncome > oasThreshold) {
           oasClawback = Math.min(curOasGross, 0.15 * (line23400NetIncome - oasThreshold));
         }
 
-        // Net OAS Benefit received after clawback
         const curOasNet = Math.max(0, curOasGross - oasClawback);
-
-        // CRA Line 26000 Taxable Income after Line 23500 OAS Repayment Deduction
         const line26000TaxableIncome = Math.max(0, line23400NetIncome - oasClawback);
 
-        const totalIncomeTaxes = calculateOntarioTax(line26000TaxableIncome, inflationFactor, currentAge, curWithdraw.rrsp);
-        
-        // Sum Withdrawals reflecting Net OAS Pension Cash Flow
-        const sumWithdraw = keys.reduce((sum, k) => sum + curWithdraw[k], 0) + curCpp + curOasNet;
+        const totalIncomeTaxes = calculateOntarioTax(line26000TaxableIncome, inflationFactor, currentAge, actualWithdraw.rrsp);
+
+        // Incorporate simulated cashBufferDraw into total cash-flow withdrawal
+        const sumWithdraw = keys.reduce((sum, k) => sum + actualWithdraw[k], 0) + curCpp + curOasNet + cashBufferDraw;
         const totalTakeHome = sumWithdraw - totalIncomeTaxes;
         const sumEndingBalances = keys.reduce((sum, k) => sum + accs[k].balance, 0);
 
@@ -1585,11 +1400,11 @@
             sumBalances: sumEndingBalances,
             curContrib: JSON.parse(JSON.stringify(curContrib)),
             sumContrib,
-            curWithdraw: JSON.parse(JSON.stringify(curWithdraw)),
-            curCpp, curOas: curOasNet, oasClawback, curOasGross, sumWithdraw,
+            curWithdraw: JSON.parse(JSON.stringify(actualWithdraw)),
+            curCpp, curOas: curOasNet, oasClawback, curOasGross, cashBufferDraw, sumWithdraw,
             totalTaxableAmount: line26000TaxableIncome, totalTaxes: totalIncomeTaxes, totalTakeHome,
             monthlyTakeHome: totalTakeHome / 12,
-            isShockActive, isRecoveryYear, activeDropPct, activeReboundRate, inflationFactor
+            isSeqActive, activeSeqReturn, inflationFactor
           });
         }
 
@@ -1672,21 +1487,30 @@
           taxesPaid: d.totalTaxes / df,
           takeHomeAnnual: d.totalTakeHome / df,
           takeHomeMonthly: d.monthlyTakeHome / df,
-          isShockActive: d.isShockActive
+          isSeqActive: d.isSeqActive
         });
 
         const row = document.createElement('tr');
-        if (d.isShockActive) {
-          row.classList.add('shock-row');
-        } else if (d.isRecoveryYear) {
-          row.classList.add('rebound-row');
+        if (d.isSeqActive) {
+          if (d.activeSeqReturn < 0) {
+            row.classList.add('shock-row');
+          } else {
+            row.classList.add('rebound-row');
+          }
         }
 
         let eventLabel = '';
-        if (d.isShockActive) {
-          eventLabel = ` 📉 (-${Math.round(d.activeDropPct * 100)}%)`;
-        } else if (d.isRecoveryYear) {
-          eventLabel = ` 📈 (+${Math.round(d.activeReboundRate * 100)}% Rebound)`;
+        if (d.isSeqActive) {
+          const retPct = (d.activeSeqReturn * 100).toFixed(1);
+          if (d.activeSeqReturn < 0) {
+            eventLabel = ` 📉 (${retPct}%)`;
+          } else {
+            eventLabel = ` 📈 (+${retPct}%)`;
+          }
+        }
+        
+        if (d.cashBufferDraw > 0) {
+          eventLabel += " 🛡️";
         }
 
         row.innerHTML = `
@@ -1722,7 +1546,6 @@
         tbody.appendChild(row);
       });
 
-      // Update Lifetime Take-Home Income Badge
       document.getElementById('lifetimeTakeHomeBadge').innerText = fmt.format(lifetimeTakeHomeTotal);
 
       updateCharts();
@@ -1791,36 +1614,20 @@
       }
     }
 
-    // Reset button event handler: Calibrates returns & rebounds to yield ~10% 20-Year CAGR
+    document.getElementById('sequencePreset').addEventListener('change', function() {
+      const presetKey = this.value;
+      if (presetKey !== 'custom' && SEQUENCE_PRESETS[presetKey]) {
+        document.getElementById('sequenceReturnsInput').value = SEQUENCE_PRESETS[presetKey];
+        saveInputs();
+        calculateProjections();
+      }
+    });
+
     document.getElementById('reset10YrCagrBtn').addEventListener('click', function() {
-      // 1. Set baseline account return rates to 10.0%
-      document.getElementById('taxableReturn').value = '10.0';
-      document.getElementById('tfsaReturn').value = '10.0';
-      document.getElementById('rrspReturn').value = '10.0';
-
-      // 2. Set Cycle Start Year to current starting year
-      document.getElementById('cycleStartYear').value = document.getElementById('startYear').value;
-
-      // 3. Calibrate Correction parameters
-      document.getElementById('correctionDrop').value = '10';
-      document.getElementById('correctionInterval').value = '3';
-      document.getElementById('corrRebound1Yr').value = '28';
-      document.getElementById('corrRebound3Yr').value = '78';
-      document.getElementById('corrRebound5Yr').value = '135';
-
-      // 4. Calibrate Bear Market parameters
-      document.getElementById('bearDrop').value = '20';
-      document.getElementById('bearInterval').value = '6';
-      document.getElementById('bearRebound1Yr').value = '32';
-      document.getElementById('bearRebound3Yr').value = '84';
-      document.getElementById('bearRebound5Yr').value = '138';
-
-      // 5. Calibrate Severe Crash parameters
-      document.getElementById('crashDrop').value = '30';
-      document.getElementById('crashInterval').value = '12';
-      document.getElementById('crashRebound1Yr').value = '39';
-      document.getElementById('crashRebound3Yr').value = '90';
-      document.getElementById('crashRebound5Yr').value = '165';
+      document.getElementById('sequencePreset').value = 'sp500_30yr';
+      document.getElementById('sequenceReturnsInput').value = SEQUENCE_PRESETS.sp500_30yr;
+      document.getElementById('seqStartYear').value = document.getElementById('retireStartYear').value || document.getElementById('startYear').value;
+      document.getElementById('afterSeqMode').value = 'repeat';
 
       saveInputs();
       calculateProjections();
@@ -1845,17 +1652,18 @@
         d.taxableAmount.toFixed(2), d.taxesPaid.toFixed(2), d.takeHomeAnnual.toFixed(2), d.takeHomeMonthly.toFixed(2)
       ]);
 
-      let csvContent = "data:text/csv;charset=utf-8," + [headers.join(","), ...rows.map(e => e.join(","))].join("\n");
-      const encodedUri = encodeURI(csvContent);
+      const csvData = [headers.join(","), ...rows.map(e => e.join(","))].join("\n");
+      const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
-      link.setAttribute("href", encodedUri);
+      link.setAttribute("href", url);
       link.setAttribute("download", `ontario_investment_projection_${new Date().toISOString().slice(0,10)}.csv`);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
     });
 
-    form.querySelectorAll('input, select').forEach(input => {
+    form.querySelectorAll('input, select, textarea').forEach(input => {
       input.addEventListener('input', () => {
         saveInputs();
         calculateProjections();
