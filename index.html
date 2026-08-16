@@ -172,6 +172,29 @@
       border-color: transparent;
     }
 
+    .btn-reset-shock {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 0.45rem 0.85rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 0.25rem;
+      margin-bottom: 0.85rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: background-color 0.2s ease;
+      width: 100%;
+      justify-content: center;
+    }
+
+    .btn-reset-shock:hover {
+      background-color: var(--primary-hover);
+    }
+
     .checkbox-container {
       display: flex;
       flex-direction: column;
@@ -191,13 +214,19 @@
       cursor: pointer;
     }
 
-    /* Monte Carlo Score Banner */
-    .mc-score-banner {
+    /* Metrics Summary Grid */
+    .metrics-summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .metric-card {
       background: var(--card-bg);
       border: 2px solid var(--border-color);
       border-radius: 12px;
       padding: 1.25rem 1.5rem;
-      margin-bottom: 2rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -205,49 +234,56 @@
       transition: all 0.3s ease;
     }
 
-    .mc-score-banner.score-high {
+    .metric-card.score-high {
       background-color: var(--strategy-bg);
       border-color: var(--strategy-border);
     }
 
-    .mc-score-banner.score-medium {
+    .metric-card.score-medium {
       background-color: var(--warning-bg);
       border-color: var(--warning-border);
     }
 
-    .mc-score-banner.score-low {
+    .metric-card.score-low {
       background-color: var(--danger-bg);
       border-color: var(--danger-border);
     }
 
-    .mc-score-left {
+    .metric-card.income-card {
+      background-color: #f0fdf4;
+      border-color: #86efac;
+    }
+
+    .metric-left {
       display: flex;
       align-items: center;
       gap: 1.25rem;
     }
 
-    .mc-badge {
-      font-size: 2.2rem;
+    .metric-badge {
+      font-size: 1.8rem;
       font-weight: 800;
       line-height: 1;
-      padding: 0.5rem 1rem;
+      padding: 0.5rem 0.85rem;
       border-radius: 8px;
       background-color: #fff;
       border: 1px solid rgba(0,0,0,0.1);
+      white-space: nowrap;
     }
 
-    .mc-score-banner.score-high .mc-badge { color: var(--strategy-text); }
-    .mc-score-banner.score-medium .mc-badge { color: var(--warning-text); }
-    .mc-score-banner.score-low .mc-badge { color: var(--danger-text); }
+    .metric-card.score-high .metric-badge { color: var(--strategy-text); }
+    .metric-card.score-medium .metric-badge { color: var(--warning-text); }
+    .metric-card.score-low .metric-badge { color: var(--danger-text); }
+    .metric-card.income-card .metric-badge { color: #14532d; }
 
-    .mc-details h2 {
-      font-size: 1.2rem;
+    .metric-details h2 {
+      font-size: 1.1rem;
       font-weight: 700;
       margin-bottom: 0.2rem;
     }
 
-    .mc-details p {
-      font-size: 0.88rem;
+    .metric-details p {
+      font-size: 0.85rem;
       color: var(--text-muted);
     }
 
@@ -452,9 +488,9 @@
             <label for="autoWithdrawAllocation">Account Allocation Method</label>
             <select id="autoWithdrawAllocation">
               <option value="pro_rata">Pro-Rata (Draw from ALL accounts simultaneously)</option>
-              <option value="taxable_rrsp_tfsa">Taxable → RRSP → TFSA → FHSA</option>
-              <option value="rrsp_taxable_tfsa">RRSP → Taxable → TFSA → FHSA</option>
-              <option value="tfsa_taxable_rrsp">TFSA → Taxable → RRSP → FHSA</option>
+              <option value="taxable_rrsp_tfsa">Taxable → RRSP → TFSA</option>
+              <option value="rrsp_taxable_tfsa">RRSP → Taxable → TFSA</option>
+              <option value="tfsa_taxable_rrsp">TFSA → Taxable → RRSP</option>
               <option value="single_account">Single Account Only</option>
             </select>
           </div>
@@ -465,7 +501,6 @@
               <option value="rrsp">RRSP</option>
               <option value="tfsa">TFSA</option>
               <option value="taxable">Taxable Account</option>
-              <option value="fhsa">FHSA</option>
             </select>
           </div>
 
@@ -604,40 +639,14 @@
               <input type="number" id="rrspWithdrawalStart" value="2061">
             </div>
           </div>
-        </div>
 
-        <!-- FHSA -->
-        <div class="account-card">
-          <h3>FHSA</h3>
-          <div class="form-row">
-            <div class="form-group">
-              <label for="fhsaStart">Start Balance ($)</label>
-              <input type="number" id="fhsaStart" value="8000" step="100">
-            </div>
-            <div class="form-group">
-              <label for="fhsaReturn">Return Rate (%)</label>
-              <input type="number" id="fhsaReturn" step="0.1" value="7.0">
-            </div>
+          <div class="checkbox-group" style="margin-top: 0.5rem; margin-bottom: 0.5rem;">
+            <input type="checkbox" id="useSpouseRrif">
+            <label for="useSpouseRrif" style="font-size: 0.8rem; font-weight: 600;">Use Spouse's Age for RRIF Minimums</label>
           </div>
-          <div class="form-row">
-            <div class="form-group">
-              <label for="fhsaContrib">Contrib ($/yr)</label>
-              <input type="number" id="fhsaContrib" value="8000" step="100">
-            </div>
-            <div class="form-group">
-              <label for="fhsaContribEnd">Contrib End Year</label>
-              <input type="number" id="fhsaContribEnd" value="2030">
-            </div>
-          </div>
-          <div class="form-row manual-withdraw-field">
-            <div class="form-group">
-              <label for="fhsaWithdrawal">Withdrawal ($/yr)</label>
-              <input type="number" id="fhsaWithdrawal" value="0" step="100">
-            </div>
-            <div class="form-group">
-              <label for="fhsaWithdrawalStart">Withdraw Start Year</label>
-              <input type="number" id="fhsaWithdrawalStart" value="2061">
-            </div>
+          <div class="form-group spouse-rrif-field hidden">
+            <label for="spouseStartAge">Spouse Starting Age</label>
+            <input type="number" id="spouseStartAge" value="27" min="0" max="99">
           </div>
         </div>
 
@@ -657,7 +666,7 @@
           <div class="form-row">
             <div class="form-group">
               <label for="oasAmount">OAS ($/yr)</label>
-              <input type="number" id="oasAmount" value="8000" step="100">
+              <input type="number" id="oasAmount" value="8908" step="100">
             </div>
             <div class="form-group">
               <label for="oasStartYear">OAS Start Year</label>
@@ -684,6 +693,7 @@
 
           <!-- Realistic Historical Cycle Fields -->
           <div class="realistic-shock-fields hidden">
+            <button type="button" class="btn-reset-shock" id="reset10YrCagrBtn">⚡ Calibrate to ~10% 20-Year Average</button>
             <div class="form-row">
               <div class="form-group">
                 <label for="cycleStartYear">Cycle Start Year</label>
@@ -810,13 +820,27 @@
       </div>
     </form>
 
-    <!-- Monte Carlo Success Banner -->
-    <div id="mcBanner" class="mc-score-banner score-high">
-      <div class="mc-score-left">
-        <div class="mc-badge" id="mcScoreBadge">94%</div>
-        <div class="mc-details">
-          <h2>Monte Carlo Success Score</h2>
-          <p id="mcSubText">Probability of portfolio non-depletion through Age 100 over 500 randomized market paths.</p>
+    <!-- Metrics Summary Grid -->
+    <div class="metrics-summary-grid">
+      <!-- Monte Carlo Banner -->
+      <div id="mcBanner" class="metric-card score-high">
+        <div class="metric-left">
+          <div class="metric-badge" id="mcScoreBadge">94%</div>
+          <div class="metric-details">
+            <h2>Monte Carlo Success Score</h2>
+            <p id="mcSubText">Probability of portfolio non-depletion through Age 100 over 500 randomized market paths.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lifetime Take-Home Income Banner -->
+      <div class="metric-card income-card">
+        <div class="metric-left">
+          <div class="metric-badge" id="lifetimeTakeHomeBadge">$0</div>
+          <div class="metric-details">
+            <h2>Lifetime Take-Home Income</h2>
+            <p id="lifetimeTakeHomeSubText">Cumulative net cash flow (portfolio withdrawals & pensions minus taxes) through Age 100.</p>
+          </div>
         </div>
       </div>
     </div>
@@ -849,9 +873,9 @@
         <thead>
           <tr>
             <th colspan="2">Info</th>
-            <th colspan="5" class="header-group group-balances">Balances</th>
-            <th colspan="5" class="header-group group-contrib">Contributions</th>
-            <th colspan="7" class="header-group group-withdraw">Withdrawals & Government Pensions</th>
+            <th colspan="4" class="header-group group-balances">Balances</th>
+            <th colspan="4" class="header-group group-contrib">Contributions</th>
+            <th colspan="6" class="header-group group-withdraw">Withdrawals & Government Pensions</th>
             <th colspan="4" class="header-group group-tax">Ontario Taxes & Net Cash Flow</th>
           </tr>
           <tr>
@@ -862,21 +886,18 @@
             <th>Taxable</th>
             <th>TFSA</th>
             <th>RRSP</th>
-            <th>FHSA</th>
             <th>Sum Balances</th>
 
             <!-- Contributions -->
             <th>Taxable</th>
             <th>TFSA</th>
             <th>RRSP</th>
-            <th>FHSA</th>
             <th>Sum Contrib</th>
 
             <!-- Withdrawals & Pensions -->
             <th>Taxable</th>
             <th>TFSA</th>
             <th>RRSP</th>
-            <th>FHSA</th>
             <th>CPP</th>
             <th>OAS</th>
             <th>Sum Withdraw</th>
@@ -929,17 +950,21 @@
       return mean + (z0 * stdDev);
     }
 
-    // Official CRA RRIF Minimum Factor Lookup Table
+    // Official CRA RRIF Minimum Factor Lookup Table mapped to start-of-year age
     function getRrifMinRate(age) {
       if (age < 72) return 0;
+      const startOfYearAge = age - 1;
+      if (startOfYearAge < 71) {
+        return 1 / Math.max(1, (90 - startOfYearAge));
+      }
       const rates = {
-        72: 0.0528, 73: 0.0540, 74: 0.0553, 75: 0.0567, 76: 0.0582,
-        77: 0.0598, 78: 0.0617, 79: 0.0636, 80: 0.0658, 81: 0.0682,
-        82: 0.0708, 83: 0.0738, 84: 0.0771, 85: 0.0808, 86: 0.0851,
-        87: 0.0899, 88: 0.0955, 89: 0.1021, 90: 0.1099, 91: 0.1192,
-        92: 0.1306, 93: 0.1449, 94: 0.1634
+        71: 0.0528, 72: 0.0540, 73: 0.0553, 74: 0.0567, 75: 0.0582, 76: 0.0598,
+        77: 0.0617, 78: 0.0636, 79: 0.0658, 80: 0.0682, 81: 0.0708,
+        82: 0.0738, 83: 0.0771, 84: 0.0808, 85: 0.0851, 86: 0.0899,
+        87: 0.0955, 88: 0.1021, 89: 0.1099, 90: 0.1192, 91: 0.1306,
+        92: 0.1449, 93: 0.1634, 94: 0.1879
       };
-      return rates[age] || 0.20;
+      return rates[startOfYearAge] || 0.20;
     }
 
     // Official Ontario Health Premium Calculation Tier Schedule
@@ -999,6 +1024,15 @@
         }
       }
 
+      // Update Spouse RRIF Age UI
+      const useSpouseRrif = document.getElementById('useSpouseRrif').checked;
+      const spouseField = document.querySelector('.spouse-rrif-field');
+      if (useSpouseRrif) {
+        spouseField.classList.remove('hidden');
+      } else {
+        spouseField.classList.add('hidden');
+      }
+
       const enableShock = document.getElementById('enableShock').checked;
       const shockMode = document.getElementById('shockMode').value;
       const shockModeGroup = document.querySelector('.shock-mode-group');
@@ -1055,19 +1089,9 @@
       }
     }
 
-    // Combined Ontario & Federal Tax Calculation + OAS Recovery Tax + Ontario Health Premium
-    function calculateOntarioTax(income, inflationFactor, curOas = 0) {
-      if (income <= 0) return 0;
-
-      // CRA Line 23500: OAS Recovery Tax deduction from Net Income
-      const oasThreshold = 93208 * inflationFactor;
-      let oasClawback = 0;
-      if (curOas > 0 && income > oasThreshold) {
-        oasClawback = Math.min(curOas, 0.15 * (income - oasThreshold));
-      }
-
-      // Net Taxable Income after OAS Repayment Deduction (Line 26000)
-      const taxableNetIncome = Math.max(0, income - oasClawback);
+    // Combined Ontario & Federal Tax Calculation with Non-Refundable Credits (Age Amount & Pension Income Credit)
+    function calculateOntarioTax(taxableNetIncome, inflationFactor, currentAge = 30, rrspWithdrawal = 0) {
+      if (taxableNetIncome <= 0) return 0;
 
       const fedBPA = 16452 * inflationFactor;
       const fedBrackets = [
@@ -1087,29 +1111,59 @@
         { limit: Infinity, rate: 0.1316 }
       ];
 
-      let fedTax = 0;
+      // Federal Base Tax
+      let fedTaxGross = 0;
       let prevLimit = 0;
-
       for (const b of fedBrackets) {
         const taxableInBracket = Math.min(Math.max(0, taxableNetIncome - prevLimit), b.limit - prevLimit);
         if (taxableInBracket > 0) {
-          fedTax += taxableInBracket * b.rate;
+          fedTaxGross += taxableInBracket * b.rate;
         }
         prevLimit = b.limit;
       }
-      fedTax = Math.max(0, fedTax - (fedBPA * 0.14));
 
-      let onTax = 0;
+      // Non-refundable Federal Credits
+      let fedCredits = fedBPA * 0.14;
+      if (currentAge >= 65) {
+        // Federal Pension Income Amount (14% on up to $2,000 eligible RRIF draw)
+        const fedPensionEligible = Math.min(2000 * inflationFactor, rrspWithdrawal);
+        fedCredits += fedPensionEligible * 0.14;
+
+        // Federal Age Amount ($8,790 max, clawed back at 15% above $45,522)
+        const fedAgeMax = 8790 * inflationFactor;
+        const fedAgeThreshold = 45522 * inflationFactor;
+        const fedAgeAmt = Math.max(0, fedAgeMax - 0.15 * Math.max(0, taxableNetIncome - fedAgeThreshold));
+        fedCredits += fedAgeAmt * 0.14;
+      }
+      const fedTax = Math.max(0, fedTaxGross - fedCredits);
+
+      // Ontario Base Tax
+      let onTaxGross = 0;
       prevLimit = 0;
       for (const b of onBrackets) {
         const taxableInBracket = Math.min(Math.max(0, taxableNetIncome - prevLimit), b.limit - prevLimit);
         if (taxableInBracket > 0) {
-          onTax += taxableInBracket * b.rate;
+          onTaxGross += taxableInBracket * b.rate;
         }
         prevLimit = b.limit;
       }
-      onTax = Math.max(0, onTax - (onBPA * 0.0505));
 
+      // Non-refundable Ontario Credits
+      let onCredits = onBPA * 0.0505;
+      if (currentAge >= 65) {
+        // Ontario Pension Income Amount (5.05% on up to $1,527 eligible RRIF draw)
+        const onPensionEligible = Math.min(1527 * inflationFactor, rrspWithdrawal);
+        onCredits += onPensionEligible * 0.0505;
+
+        // Ontario Age Amount ($5,640 max, clawed back at 15% above $42,201)
+        const onAgeMax = 5640 * inflationFactor;
+        const onAgeThreshold = 42201 * inflationFactor;
+        const onAgeAmt = Math.max(0, onAgeMax - 0.15 * Math.max(0, taxableNetIncome - onAgeThreshold));
+        onCredits += onAgeAmt * 0.0505;
+      }
+      let onTax = Math.max(0, onTaxGross - onCredits);
+
+      // Ontario Surtax
       const t1 = 5818 * inflationFactor;
       const t2 = 7449 * inflationFactor;
       let surtax = 0;
@@ -1120,7 +1174,7 @@
 
       const healthPremium = calculateOntarioHealthPremium(taxableNetIncome);
 
-      return fedTax + onTax + healthPremium + oasClawback;
+      return fedTax + onTax + healthPremium;
     }
 
     function getSimConfig() {
@@ -1137,6 +1191,9 @@
         vanguardCeiling: parseNum('vanguardCeiling', 5.0, true) / 100,
         vanguardFloor: parseNum('vanguardFloor', 2.5, true) / 100,
         
+        useSpouseRrif: document.getElementById('useSpouseRrif').checked,
+        spouseStartAge: parseNum('spouseStartAge', 27),
+
         enableShock: document.getElementById('enableShock').checked,
         shockMode: document.getElementById('shockMode').value,
         cycleStartYear: parseNum('cycleStartYear', 2026),
@@ -1177,7 +1234,7 @@
 
     function runTrial(isMonteCarlo = false, simConfig = null) {
       const cfg = simConfig || getSimConfig();
-      const keys = ['taxable', 'tfsa', 'rrsp', 'fhsa'];
+      const keys = ['taxable', 'tfsa', 'rrsp'];
       
       const accs = {};
       keys.forEach(k => {
@@ -1326,8 +1383,10 @@
           postGrowthPlusContrib[k] = (accs[k].balance * (1 + rate)) + curContrib[k];
         });
 
-        // Calculate CRA RRIF Mandatory Minimum Draw at Age 72+ against Start-of-Year RRIF balance
-        const rrifMin = (currentAge >= 72) ? startRrifBalance * getRrifMinRate(currentAge) : 0;
+        // Calculate CRA RRIF Mandatory Minimum Draw using either Owner's or Spouse's Age
+        const spouseAge = cfg.spouseStartAge + (currentYear - cfg.startYear);
+        const effectiveRrifAge = cfg.useSpouseRrif ? spouseAge : currentAge;
+        const rrifMin = (currentAge >= 72) ? startRrifBalance * getRrifMinRate(effectiveRrifAge) : 0;
 
         if (cfg.strategyType === 'manual') {
           keys.forEach(k => {
@@ -1422,13 +1481,14 @@
                   curWithdraw[k] += drawAmount * (availBal[k] / totalAvail);
                 });
               } else if (cfg.autoAlloc === 'single_account') {
-                if (availBal[cfg.singleAccKey] > 0) {
-                  curWithdraw[cfg.singleAccKey] += Math.min(remainingToDraw, availBal[cfg.singleAccKey]);
+                const sKey = cfg.singleAccKey;
+                if (availBal[sKey] > 0) {
+                  curWithdraw[sKey] += Math.min(remainingToDraw, availBal[sKey]);
                 }
               } else {
-                let drawOrder = ['taxable', 'rrsp', 'tfsa', 'fhsa'];
-                if (cfg.autoAlloc === 'rrsp_taxable_tfsa') drawOrder = ['rrsp', 'taxable', 'tfsa', 'fhsa'];
-                else if (cfg.autoAlloc === 'tfsa_taxable_rrsp') drawOrder = ['tfsa', 'taxable', 'rrsp', 'fhsa'];
+                let drawOrder = ['taxable', 'rrsp', 'tfsa'];
+                if (cfg.autoAlloc === 'rrsp_taxable_tfsa') drawOrder = ['rrsp', 'taxable', 'tfsa'];
+                else if (cfg.autoAlloc === 'tfsa_taxable_rrsp') drawOrder = ['tfsa', 'taxable', 'rrsp'];
 
                 drawOrder.forEach(k => {
                   if (remainingToDraw > 0 && availBal[k] > 0) {
@@ -1443,12 +1503,14 @@
         }
 
         let curCpp = (currentYear >= cfg.cppStartYear) ? cfg.cppAmount : 0;
-        let curOas = (currentYear >= cfg.oasStartYear) ? cfg.oasAmount : 0;
+        let curOasBase = (currentYear >= cfg.oasStartYear) ? cfg.oasAmount : 0;
         curCpp *= inflationFactor;
-        curOas *= inflationFactor;
+        curOasBase *= inflationFactor;
+
+        // Apply automatic 10% OAS enhancement for age 75+
+        let curOasGross = (currentAge >= 75) ? curOasBase * 1.10 : curOasBase;
 
         const sumContrib = keys.reduce((sum, k) => sum + curContrib[k], 0);
-        const sumWithdraw = keys.reduce((sum, k) => sum + curWithdraw[k], 0) + curCpp + curOas;
 
         // Apply Market Growth to account balances
         keys.forEach(k => {
@@ -1481,17 +1543,34 @@
         if (accs.taxable.balance < 0) accs.taxable.balance = 0;
 
         // Non-taxable account balance updates
-        ['tfsa', 'rrsp', 'fhsa'].forEach(k => {
+        ['tfsa', 'rrsp'].forEach(k => {
           accs[k].balance += curContrib[k] - curWithdraw[k];
           if (accs[k].balance < 0) accs[k].balance = 0;
         });
 
-        const totalTaxableAmount = Math.max(0, 
-          curWithdraw.rrsp + curWithdraw.fhsa + taxableCapGain + curCpp + curOas - curContrib.rrsp - curContrib.fhsa
+        // CRA Line 23400 Net World Income before OAS Recovery Tax Deduction
+        const line23400NetIncome = Math.max(0, 
+          curWithdraw.rrsp + taxableCapGain + curCpp + curOasGross - curContrib.rrsp
         );
 
-        const totalTaxes = calculateOntarioTax(totalTaxableAmount, inflationFactor, curOas);
-        const totalTakeHome = sumWithdraw - totalTaxes;
+        // OAS Recovery Tax Calculation (15% on income above $95,323 threshold)
+        const oasThreshold = 95323 * inflationFactor;
+        let oasClawback = 0;
+        if (curOasGross > 0 && line23400NetIncome > oasThreshold) {
+          oasClawback = Math.min(curOasGross, 0.15 * (line23400NetIncome - oasThreshold));
+        }
+
+        // Net OAS Benefit received after clawback
+        const curOasNet = Math.max(0, curOasGross - oasClawback);
+
+        // CRA Line 26000 Taxable Income after Line 23500 OAS Repayment Deduction
+        const line26000TaxableIncome = Math.max(0, line23400NetIncome - oasClawback);
+
+        const totalIncomeTaxes = calculateOntarioTax(line26000TaxableIncome, inflationFactor, currentAge, curWithdraw.rrsp);
+        
+        // Sum Withdrawals reflecting Net OAS Pension Cash Flow
+        const sumWithdraw = keys.reduce((sum, k) => sum + curWithdraw[k], 0) + curCpp + curOasNet;
+        const totalTakeHome = sumWithdraw - totalIncomeTaxes;
         const sumEndingBalances = keys.reduce((sum, k) => sum + accs[k].balance, 0);
 
         if (sumEndingBalances <= 0 && currentYear >= cfg.retireStartYear) {
@@ -1507,8 +1586,8 @@
             curContrib: JSON.parse(JSON.stringify(curContrib)),
             sumContrib,
             curWithdraw: JSON.parse(JSON.stringify(curWithdraw)),
-            curCpp, curOas, sumWithdraw,
-            totalTaxableAmount, totalTaxes, totalTakeHome,
+            curCpp, curOas: curOasNet, oasClawback, curOasGross, sumWithdraw,
+            totalTaxableAmount: line26000TaxableIncome, totalTaxes: totalIncomeTaxes, totalTakeHome,
             monthlyTakeHome: totalTakeHome / 12,
             isShockActive, isRecoveryYear, activeDropPct, activeReboundRate, inflationFactor
           });
@@ -1565,8 +1644,12 @@
       const tbody = document.querySelector('#projectionTable tbody');
       tbody.innerHTML = '';
 
+      let lifetimeTakeHomeTotal = 0;
+
       trialDataset.forEach(d => {
         const df = showRealValues ? d.inflationFactor : 1.0;
+
+        lifetimeTakeHomeTotal += (d.totalTakeHome / df);
 
         projectionDataset.push({
           year: d.year,
@@ -1574,17 +1657,14 @@
           taxableBal: d.accs.taxable.balance / df,
           tfsaBal: d.accs.tfsa.balance / df,
           rrspBal: d.accs.rrsp.balance / df,
-          fhsaBal: d.accs.fhsa.balance / df,
           totalBal: d.sumBalances / df,
           taxableContrib: d.curContrib.taxable / df,
           tfsaContrib: d.curContrib.tfsa / df,
           rrspContrib: d.curContrib.rrsp / df,
-          fhsaContrib: d.curContrib.fhsa / df,
           totalContrib: d.sumContrib / df,
           taxableWithdraw: d.curWithdraw.taxable / df,
           tfsaWithdraw: d.curWithdraw.tfsa / df,
           rrspWithdraw: d.curWithdraw.rrsp / df,
-          fhsaWithdraw: d.curWithdraw.fhsa / df,
           cpp: d.curCpp / df,
           oas: d.curOas / df,
           totalWithdraw: d.sumWithdraw / df,
@@ -1617,21 +1697,18 @@
           <td>${fmt.format(d.accs.taxable.balance / df)}</td>
           <td>${fmt.format(d.accs.tfsa.balance / df)}</td>
           <td>${fmt.format(d.accs.rrsp.balance / df)}</td>
-          <td>${fmt.format(d.accs.fhsa.balance / df)}</td>
           <td class="total-cell">${fmt.format(d.sumBalances / df)}</td>
 
           <!-- Contribs -->
           <td>${fmt.format(d.curContrib.taxable / df)}</td>
           <td>${fmt.format(d.curContrib.tfsa / df)}</td>
           <td>${fmt.format(d.curContrib.rrsp / df)}</td>
-          <td>${fmt.format(d.curContrib.fhsa / df)}</td>
           <td class="total-cell">${fmt.format(d.sumContrib / df)}</td>
 
           <!-- Withdrawals & Pensions -->
           <td>${fmt.format(d.curWithdraw.taxable / df)}</td>
           <td>${fmt.format(d.curWithdraw.tfsa / df)}</td>
           <td>${fmt.format(d.curWithdraw.rrsp / df)}</td>
-          <td>${fmt.format(d.curWithdraw.fhsa / df)}</td>
           <td>${fmt.format(d.curCpp / df)}</td>
           <td>${fmt.format(d.curOas / df)}</td>
           <td class="total-cell">${fmt.format(d.sumWithdraw / df)}</td>
@@ -1645,6 +1722,9 @@
         tbody.appendChild(row);
       });
 
+      // Update Lifetime Take-Home Income Badge
+      document.getElementById('lifetimeTakeHomeBadge').innerText = fmt.format(lifetimeTakeHomeTotal);
+
       updateCharts();
       runMonteCarloSimulations(cfg);
     }
@@ -1657,8 +1737,7 @@
         datasets: [
           { label: 'Taxable', data: projectionDataset.map(d => d.taxableBal), backgroundColor: '#3b82f6' },
           { label: 'TFSA', data: projectionDataset.map(d => d.tfsaBal), backgroundColor: '#10b981' },
-          { label: 'RRSP', data: projectionDataset.map(d => d.rrspBal), backgroundColor: '#f59e0b' },
-          { label: 'FHSA', data: projectionDataset.map(d => d.fhsaBal), backgroundColor: '#8b5cf6' }
+          { label: 'RRSP', data: projectionDataset.map(d => d.rrspBal), backgroundColor: '#f59e0b' }
         ]
       };
 
@@ -1712,22 +1791,57 @@
       }
     }
 
+    // Reset button event handler: Calibrates returns & rebounds to yield ~10% 20-Year CAGR
+    document.getElementById('reset10YrCagrBtn').addEventListener('click', function() {
+      // 1. Set baseline account return rates to 10.0%
+      document.getElementById('taxableReturn').value = '10.0';
+      document.getElementById('tfsaReturn').value = '10.0';
+      document.getElementById('rrspReturn').value = '10.0';
+
+      // 2. Set Cycle Start Year to current starting year
+      document.getElementById('cycleStartYear').value = document.getElementById('startYear').value;
+
+      // 3. Calibrate Correction parameters
+      document.getElementById('correctionDrop').value = '10';
+      document.getElementById('correctionInterval').value = '3';
+      document.getElementById('corrRebound1Yr').value = '28';
+      document.getElementById('corrRebound3Yr').value = '78';
+      document.getElementById('corrRebound5Yr').value = '135';
+
+      // 4. Calibrate Bear Market parameters
+      document.getElementById('bearDrop').value = '20';
+      document.getElementById('bearInterval').value = '6';
+      document.getElementById('bearRebound1Yr').value = '32';
+      document.getElementById('bearRebound3Yr').value = '84';
+      document.getElementById('bearRebound5Yr').value = '138';
+
+      // 5. Calibrate Severe Crash parameters
+      document.getElementById('crashDrop').value = '30';
+      document.getElementById('crashInterval').value = '12';
+      document.getElementById('crashRebound1Yr').value = '39';
+      document.getElementById('crashRebound3Yr').value = '90';
+      document.getElementById('crashRebound5Yr').value = '165';
+
+      saveInputs();
+      calculateProjections();
+    });
+
     document.getElementById('exportCsvBtn').addEventListener('click', function() {
       if (!projectionDataset.length) return;
 
       const headers = [
         "Year", "Age", 
-        "Taxable Balance", "TFSA Balance", "RRSP Balance", "FHSA Balance", "Total Balance",
-        "Taxable Contrib", "TFSA Contrib", "RRSP Contrib", "FHSA Contrib", "Total Contrib",
-        "Taxable Withdraw", "TFSA Withdraw", "RRSP Withdraw", "FHSA Withdraw", "CPP", "OAS", "Total Withdraw",
+        "Taxable Balance", "TFSA Balance", "RRSP Balance", "Total Balance",
+        "Taxable Contrib", "TFSA Contrib", "RRSP Contrib", "Total Contrib",
+        "Taxable Withdraw", "TFSA Withdraw", "RRSP Withdraw", "CPP", "OAS", "Total Withdraw",
         "Total Taxable Amount", "Total Taxes Paid", "Annual Take Home", "Monthly Take Home"
       ];
 
       const rows = projectionDataset.map(d => [
         d.year, d.age,
-        d.taxableBal.toFixed(2), d.tfsaBal.toFixed(2), d.rrspBal.toFixed(2), d.fhsaBal.toFixed(2), d.totalBal.toFixed(2),
-        d.taxableContrib.toFixed(2), d.tfsaContrib.toFixed(2), d.rrspContrib.toFixed(2), d.fhsaContrib.toFixed(2), d.totalContrib.toFixed(2),
-        d.taxableWithdraw.toFixed(2), d.tfsaWithdraw.toFixed(2), d.rrspWithdraw.toFixed(2), d.fhsaWithdraw.toFixed(2), d.cpp.toFixed(2), d.oas.toFixed(2), d.totalWithdraw.toFixed(2),
+        d.taxableBal.toFixed(2), d.tfsaBal.toFixed(2), d.rrspBal.toFixed(2), d.totalBal.toFixed(2),
+        d.taxableContrib.toFixed(2), d.tfsaContrib.toFixed(2), d.rrspContrib.toFixed(2), d.totalContrib.toFixed(2),
+        d.taxableWithdraw.toFixed(2), d.tfsaWithdraw.toFixed(2), d.rrspWithdraw.toFixed(2), d.cpp.toFixed(2), d.oas.toFixed(2), d.totalWithdraw.toFixed(2),
         d.taxableAmount.toFixed(2), d.taxesPaid.toFixed(2), d.takeHomeAnnual.toFixed(2), d.takeHomeMonthly.toFixed(2)
       ]);
 
